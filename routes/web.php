@@ -22,6 +22,9 @@ Route::get('/cek-db', function () {
     }
 });
 
+Route::get('/db-test', function () {
+    return DB::connection()->getDatabaseName();
+});
 
 
 Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
