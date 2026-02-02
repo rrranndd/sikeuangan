@@ -1,0 +1,193 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.auth-body {
+    font-family: Arial, sans-serif;
+    background: #1b7f5c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.auth-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 360px;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+.auth-title {
+    margin: 0;
+    font-size: 26px;
+    color: #1b7f5c;
+}
+
+.auth-subtitle {
+    margin: 6px 0 24px;
+    color: #777;
+    font-size: 14px;
+}
+
+.auth-group {
+    margin-bottom: 14px;
+}
+
+.auth-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.auth-group input:focus {
+    outline: none;
+    border-color: #1b7f5c;
+    box-shadow: 0 0 0 3px rgba(27,127,92,0.15);
+}
+
+.auth-button {
+    width: 100%;   
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: none;
+    background: #1b7f5c;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-button:hover {
+    background: #166a4c;
+}
+
+.auth-error {
+    background: #fdecea;
+    color: #c0392b;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+}
+
+.auth-footer {
+    margin-top: 18px;
+    font-size: 13px;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #1b7f5c;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.password-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+}
+
+.auth-card {
+    animation: slideFade 0.4s ease;
+}
+
+@keyframes slideFade {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.password-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.toggle-password svg {
+    width: 18px;
+    height: 18px;
+    stroke: #666;
+    fill: none;
+    stroke-width: 2;
+}
+
+.eye-closed {
+    display: none;
+}
+
+.password-meter {
+    height: 6px;
+    background: #eee;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.password-meter-bar {
+    height: 100%;
+    width: 0%;
+    background: #ccc;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.password-hint {
+    font-size: 12px;
+    margin-top: 6px;
+    color: #777;
+}
+
+.password-weak {
+    background: #e74c3c;
+}
+
+.password-medium {
+    background: #f1c40f;
+}
+
+.password-strong {
+    background: #1b7f5c;
+}
