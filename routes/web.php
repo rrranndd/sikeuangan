@@ -14,11 +14,13 @@ Route::get('/', function () {
 });
 
 Route::get('/cek-db', function () {
-    return DB::connection()->getPdo()
-        ? '✅ PostgreSQL CONNECTED'
-        : '❌ FAILED';
+    try {
+        DB::connection()->getPdo();
+        return 'CONNECTED TO POSTGRESQL';
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
 });
-
 
 
 Route::get('/db-test', function () {
