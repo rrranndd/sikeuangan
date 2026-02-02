@@ -5,12 +5,24 @@ use App\Http\Middleware\AuthCustom;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\LaporanController;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return session()->has('user_id')
         ? redirect('/dashboard')
         : redirect('/login');
 });
+
+Route::get('/cek-db', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'KONEK POSTGRESQL OK';
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
+
+
 
 Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
