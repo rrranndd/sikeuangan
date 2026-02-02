@@ -16,11 +16,12 @@ Route::get('/', function () {
 Route::get('/cek-db', function () {
     try {
         DB::connection()->getPdo();
-        return 'KONEK POSTGRESQL OK';
+        return 'CONNECTED TO POSTGRESQL';
     } catch (\Exception $e) {
         return $e->getMessage();
     }
 });
+
 
 Route::get('/db-test', function () {
     return DB::connection()->getDatabaseName();
