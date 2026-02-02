@@ -15,6 +15,8 @@ COPY . .
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
+RUN php artisan config:clear
+RUN php artisan cache:clear
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
