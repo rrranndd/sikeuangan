@@ -8,7 +8,6 @@ RUN docker-php-ext-install pdo pdo_pgsql pgsql zip
 RUN a2enmod rewrite
 
 WORKDIR /var/www/html
-
 COPY . .
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
