@@ -2,14 +2,14 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: #f4f6f8;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
     width: 240px;
-    height: 100vh;
+    min-height: 100vh;
     background: #1b7f5c;
     color: white;
     padding: 20px;
@@ -96,7 +96,7 @@ body {
 
 .content {
     margin-left: 240px;
-    height: 100vh;
+    min-height: 100vh;
     overflow-y: auto;
     padding: 40px;
     box-sizing: border-box;
@@ -371,11 +371,12 @@ table td {
 }
 
 .chart-wrapper {
-    width: 380px;
+    width: 100%;
+    max-width: 320px;
     aspect-ratio: 1 / 1;
-    margin: 30px auto;
-    position: relative;
+    margin: 20px auto;
 }
+
 
 .chart-wrapper canvas {
     width: 100% !important;
@@ -437,9 +438,13 @@ table td {
     }
 
     .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
         width: 260px;
         transform: translateX(-100%);
-        box-shadow: 4px 0 20px rgba(0,0,0,0.25);
+        z-index: 2000;
     }
 
     .sidebar.show {
@@ -456,7 +461,9 @@ table td {
 
     .content {
         margin-left: 0 !important;
-        padding: 20px;
+        width: 100%;
+        padding: 14px;
+        overflow-y: visible;
     }
 
     .summary {
@@ -465,6 +472,16 @@ table td {
 
     .filter {
         flex-direction: column;
+    }
+
+    .laporan-summary {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .laporan-summary strong {
+        font-size: 20px;
     }
 }
 
