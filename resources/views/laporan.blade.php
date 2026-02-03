@@ -28,7 +28,7 @@
         </select>
 
         <a id="btnExport"
-           class="btn-secondary"
+           class="btn-secondary btn-export"
            href="/laporan/export?bulan={{ $bulan }}&tahun={{ $tahun }}">
             Export Excel
         </a>
@@ -126,7 +126,6 @@ function loadLaporan() {
             document.getElementById('btnExport').href =
                 `/laporan/export?bulan=${bulan}&tahun=${tahun}`;
 
-            // chart
             renderChart(labels, values);
         });
 }

@@ -50,6 +50,7 @@
                     <th width="120">Aksi</th>
                 </tr>
             </thead>
+
             <tbody id="tabel-transaksi">
                 <tr>
                     <td colspan="5">Memuat data...</td>
@@ -59,6 +60,7 @@
     </div>
 </div>
 
+{{-- MODAL --}}
 <div class="modal" id="modalTransaksi">
     <div class="modal-content fancy">
 
@@ -152,18 +154,21 @@ function loadTransaksi() {
                 data.forEach(t => {
                     html += `
                         <tr>
-                            <td>${t.tanggal}</td>
-                            <td>${t.jenis}</td>
-                            <td>${t.kategori}</td>
-                            <td>Rp ${Number(t.nominal).toLocaleString('id-ID')}</td>
-                            <td class="aksi">
-                                <button class="btn-edit" onclick="editTransaksiById(${t.id})" title="Edit">
+                            <td data-label="Tanggal">${t.tanggal}</td>
+                            <td data-label="Jenis">${t.jenis}</td>
+                            <td data-label="Kategori">${t.kategori}</td>
+                            <td data-label="Nominal">
+                                Rp ${Number(t.nominal).toLocaleString('id-ID')}
+                            </td>
+                            <td class="aksi" data-label="Aksi">
+                                <button class="btn-edit" onclick="editTransaksiById(${t.id})">
                                     <svg viewBox="0 0 24 24">
                                         <path d="M12 20h9"/>
                                         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
                                     </svg>
                                 </button>
-                                <button class="btn-delete" onclick="hapusTransaksi(${t.id})" title="Hapus">
+
+                                <button class="btn-delete" onclick="hapusTransaksi(${t.id})">
                                     <svg viewBox="0 0 24 24">
                                         <polyline points="3 6 5 6 21 6"/>
                                         <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>

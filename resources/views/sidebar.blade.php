@@ -3,8 +3,11 @@
     <div class="sidebar-header">
         <h2 class="logo">SiKeuangan</h2>
 
-        <button class="btn-arrow" id="btnArrow">←</button>
-        <button class="btn-hamburger" id="btnHamburger">☰</button>
+        <button class="btn-sidebar-toggle" id="btnSidebarToggle" aria-label="Toggle Sidebar">
+            ☰
+        </button>
+
+        <button class="btn-close-mobile" id="closeSidebar">✕</button>
     </div>
 
     <div class="sidebar-user">
