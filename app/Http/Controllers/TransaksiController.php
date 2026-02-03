@@ -13,20 +13,49 @@ class TransaksiController extends Controller
         $tanggal = date('Y-m-d');
         $userId  = session('user_id');
 
-        $bulan = Carbon::parse($tanggal)->month;
-        $tahun = Carbon::parse($tanggal)->year;
+        $carbon = Carbon::parse($tanggal);
+        $bulan  = $carbon->month;
+        $tahun  = $carbon->year;
 
-        $summary = DB::selectOne("
-            SELECT
-                COALESCE(SUM(CASE WHEN jenis = 'pemasukan' THEN nominal END), 0) AS pemasukan,
-                COALESCE(SUM(CASE WHEN jenis = 'pengeluaran' THEN nominal END), 0) AS pengeluaran
+        // 1️⃣ PEMASUKAN HARI INI SAJA
+        $pemasukanHariIni = DB::selectOne("
+            SELECT COALESCE(SUM(nominal), 0) AS total
+            FROM transaksi
+            WHERE user_id = ?
+            AND jenis = 'pemasukan'
+            AND tanggal = ?
+        ", [$userId, $tanggal])->total;
+
+        // 2️⃣ PENGELUARAN HARI INI SAJA
+        $pengeluaranHariIni = DB::selectOne("
+            SELECT COALESCE(SUM(nominal), 0) AS total
+            FROM transaksi
+            WHERE user_id = ?
+            AND jenis = 'pengeluaran'
+            AND tanggal = ?
+        ", [$userId, $tanggal])->total;
+
+        // 3️⃣ SALDO SAMPAI HARI KEMARIN (DALAM BULAN YANG SAMA)
+        $saldoSebelumnya = DB::selectOne("
+            SELECT COALESCE(
+                SUM(
+                    CASE
+                        WHEN jenis = 'pemasukan' THEN nominal
+                        WHEN jenis = 'pengeluaran' THEN -nominal
+                    END
+                ), 0
+            ) AS saldo
             FROM transaksi
             WHERE user_id = ?
             AND EXTRACT(MONTH FROM tanggal) = ?
             AND EXTRACT(YEAR FROM tanggal) = ?
-            AND tanggal <= ?
-        ", [$userId, $bulan, $tahun, $tanggal]);
+            AND tanggal < ?
+        ", [$userId, $bulan, $tahun, $tanggal])->saldo;
 
+        // 4️⃣ SISA FINAL
+        $sisa = $saldoSebelumnya + $pemasukanHariIni - $pengeluaranHariIni;
+
+        // 5️⃣ TRANSAKSI HARI INI
         $transaksi = DB::select("
             SELECT tanggal, jenis, kategori, nominal
             FROM transaksi
@@ -37,9 +66,9 @@ class TransaksiController extends Controller
 
         return view('dashboard', [
             'tanggal' => $tanggal,
-            'totalPemasukan' => $summary->pemasukan,
-            'totalPengeluaran' => $summary->pengeluaran,
-            'sisaKeuangan' => $summary->pemasukan - $summary->pengeluaran,
+            'totalPemasukan' => $pemasukanHariIni,
+            'totalPengeluaran' => $pengeluaranHariIni,
+            'sisaKeuangan' => $sisa,
             'transaksi' => $transaksi
         ]);
     }

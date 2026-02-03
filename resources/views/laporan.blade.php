@@ -132,12 +132,17 @@ function loadLaporan() {
 }
 
 function renderChart(labels, data) {
-    const ctx = document.getElementById('chartKategori').getContext('2d');
+    const canvas = document.getElementById('chartKategori');
+    const ctx = canvas.getContext('2d');
 
     if (chart) chart.destroy();
 
     if (labels.length === 0) {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#888';
+        ctx.textAlign = 'center';
+        ctx.fillText('Belum ada data pengeluaran', canvas.width / 2, canvas.height / 2);
         return;
     }
 
@@ -165,7 +170,6 @@ function renderChart(labels, data) {
         }
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', loadLaporan);
 document.getElementById('bulan').addEventListener('change', loadLaporan);
