@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
@@ -13,21 +14,26 @@ class TransaksiController extends Controller
         $userId  = session('user_id');
 
         $totalPemasukan = DB::selectOne("
-            SELECT IFNULL(SUM(nominal),0) total
+            SELECT COALESCE(SUM(nominal), 0) AS total
             FROM transaksi
-            WHERE user_id=? AND jenis='pemasukan' AND tanggal=?
+            WHERE user_id = ?
+            AND jenis = 'pemasukan'
+            AND tanggal = ?
         ", [$userId, $tanggal])->total;
 
         $totalPengeluaran = DB::selectOne("
-            SELECT IFNULL(SUM(nominal),0) total
+            SELECT COALESCE(SUM(nominal), 0) AS total
             FROM transaksi
-            WHERE user_id=? AND jenis='pengeluaran' AND tanggal=?
+            WHERE user_id = ?
+            AND jenis = 'pengeluaran'
+            AND tanggal = ?
         ", [$userId, $tanggal])->total;
 
         $transaksi = DB::select("
             SELECT tanggal, jenis, kategori, nominal
             FROM transaksi
-            WHERE user_id=? AND tanggal=?
+            WHERE user_id = ?
+            AND tanggal = ?
             ORDER BY id DESC
         ", [$userId, $tanggal]);
 
@@ -39,13 +45,14 @@ class TransaksiController extends Controller
             'transaksi' => $transaksi
         ]);
     }
+
     public function ajaxDashboardHarian(Request $request)
     {
         $tanggal = $request->get('tanggal');
         $userId  = session('user_id');
 
         $pemasukanHariIni = DB::selectOne("
-            SELECT IFNULL(SUM(nominal),0) total
+            SELECT COALESCE(SUM(nominal), 0) AS total
             FROM transaksi
             WHERE user_id = ?
             AND jenis = 'pemasukan'
@@ -53,7 +60,7 @@ class TransaksiController extends Controller
         ", [$userId, $tanggal])->total;
 
         $pengeluaranHariIni = DB::selectOne("
-            SELECT IFNULL(SUM(nominal),0) total
+            SELECT COALESCE(SUM(nominal), 0) AS total
             FROM transaksi
             WHERE user_id = ?
             AND jenis = 'pengeluaran'
@@ -61,23 +68,20 @@ class TransaksiController extends Controller
         ", [$userId, $tanggal])->total;
 
         $saldoSebelumnya = DB::selectOne("
-            SELECT
-                IFNULL(
-                    SUM(
-                        CASE
-                            WHEN jenis = 'pemasukan' THEN nominal
-                            WHEN jenis = 'pengeluaran' THEN -nominal
-                        END
-                    ), 0
-                ) saldo
+            SELECT COALESCE(
+                SUM(
+                    CASE
+                        WHEN jenis = 'pemasukan' THEN nominal
+                        WHEN jenis = 'pengeluaran' THEN -nominal
+                    END
+                ), 0
+            ) AS saldo
             FROM transaksi
             WHERE user_id = ?
             AND tanggal < ?
         ", [$userId, $tanggal])->saldo;
 
-        $sisa = $saldoSebelumnya
-            + $pemasukanHariIni
-            - $pengeluaranHariIni;
+        $sisa = $saldoSebelumnya + $pemasukanHariIni - $pengeluaranHariIni;
 
         $transaksi = DB::select("
             SELECT tanggal, jenis, kategori, nominal
@@ -91,9 +95,7 @@ class TransaksiController extends Controller
             'pemasukan' => $pemasukanHariIni,
             'pengeluaran' => $pengeluaranHariIni,
             'sisa' => $sisa,
-            'label_tanggal' =>
-                \Carbon\Carbon::parse($tanggal)
-                    ->translatedFormat('d F Y'),
+            'label_tanggal' => Carbon::parse($tanggal)->translatedFormat('d F Y'),
             'transaksi' => $transaksi
         ]);
     }
@@ -113,8 +115,8 @@ class TransaksiController extends Controller
             SELECT id, tanggal, jenis, kategori, nominal
             FROM transaksi
             WHERE user_id = ?
-            AND MONTH(tanggal)=?
-            AND YEAR(tanggal)=?
+            AND EXTRACT(MONTH FROM tanggal) = ?
+            AND EXTRACT(YEAR FROM tanggal) = ?
             ORDER BY tanggal DESC
         ", [$userId, $bulan, $tahun]);
 
@@ -161,7 +163,8 @@ class TransaksiController extends Controller
         DB::update("
             UPDATE transaksi
             SET tanggal = ?, jenis = ?, kategori = ?, nominal = ?
-            WHERE id = ? AND user_id = ?
+            WHERE id = ?
+            AND user_id = ?
         ", [
             $request->tanggal,
             $request->jenis,
@@ -178,7 +181,8 @@ class TransaksiController extends Controller
     {
         DB::delete("
             DELETE FROM transaksi
-            WHERE id = ? AND user_id = ?
+            WHERE id = ?
+            AND user_id = ?
         ", [
             $request->id,
             session('user_id')
@@ -195,8 +199,8 @@ class TransaksiController extends Controller
         $data = DB::select("
             SELECT tanggal, jenis, kategori, nominal
             FROM transaksi
-            WHERE MONTH(tanggal) = ?
-            AND YEAR(tanggal) = ?
+            WHERE EXTRACT(MONTH FROM tanggal) = ?
+            AND EXTRACT(YEAR FROM tanggal) = ?
             ORDER BY tanggal ASC
         ", [$bulan, $tahun]);
 
@@ -209,7 +213,6 @@ class TransaksiController extends Controller
 
         $callback = function () use ($data) {
             $file = fopen('php://output', 'w');
-
             fputcsv($file, ['Tanggal', 'Jenis', 'Kategori', 'Nominal']);
 
             foreach ($data as $row) {
@@ -226,5 +229,4 @@ class TransaksiController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
-
 }
