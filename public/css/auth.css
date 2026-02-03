@@ -1,20 +1,22 @@
 * {
     box-sizing: border-box;
 }
-
 html, body {
-    height: 100%;
     margin: 0;
 }
+
 
 .auth-body {
     font-family: Arial, sans-serif;
     background: #1b7f5c;
+
+    min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-    overflow: hidden;
+
+    padding: 24px 16px;
 }
+
 
 .auth-wrapper {
     width: 100%;
@@ -190,4 +192,17 @@ html, body {
 
 .password-strong {
     background: #1b7f5c;
+}
+
+@media (min-width: 768px) {
+    .auth-body {
+        align-items: center;
+        padding: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        animation: slideFade 0.35s ease;
+    }
 }
