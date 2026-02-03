@@ -465,6 +465,8 @@ table td {
         width: 100%;
         padding: 14px;
         overflow-y: visible;
+        min-height: auto;
+        padding-bottom: 24px;
     }
 
     .summary {
@@ -486,37 +488,38 @@ table td {
     }
 
     .modal {
-        align-items: flex-end; /* ❗ jadi bottom sheet */
+        align-items: flex-end;
     }
 
     .modal-content {
-        max-width: 100%;
         width: 100%;
+        max-width: 100%;
+        max-height: 92vh;
         border-radius: 20px 20px 0 0;
-        max-height: 90vh;
         overflow-y: auto;
     }
 
     .modal-header {
-        padding: 16px;
+        padding: 14px 16px;
         font-size: 16px;
     }
 
     .form-grid {
         padding: 16px;
+        gap: 14px;
     }
 
     .form-group input,
     .form-group select {
-        font-size: 16px;   /* ❗ cegah zoom */
-        height: 48px;
+        height: 52px;
+        font-size: 16px;
     }
 
     .btn-primary,
     .btn-secondary {
-        height: 48px;
+        height: 52px;
         font-size: 16px;
-        border-radius: 10px;
+        border-radius: 12px;
     }
 }
 
