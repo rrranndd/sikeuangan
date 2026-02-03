@@ -50,10 +50,11 @@ class AuthController extends Controller
             'password' => [
                 'required',
                 'min:8',
-                'regex:/[A-Z]/',
-                'regex:/[0-9]/',
+                'regex:/^(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]+$/',
                 'confirmed'
             ]
+        ], [
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar dan 1 angka, tanpa karakter khusus.'
         ]);
 
         $userId = DB::table('users')->insertGetId([
@@ -93,7 +94,14 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:100',
-            'password' => 'nullable|min:8|confirmed'
+            'password' => [
+                'nullable',
+                'min:8',
+                'regex:/^(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]+$/',
+                'confirmed'
+            ]
+        ], [
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar dan 1 angka, tanpa karakter khusus.'
         ]);
 
         if ($request->password) {
