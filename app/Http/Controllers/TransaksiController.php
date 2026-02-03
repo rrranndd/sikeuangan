@@ -13,21 +13,19 @@ class TransaksiController extends Controller
         $tanggal = date('Y-m-d');
         $userId  = session('user_id');
 
-        $totalPemasukan = DB::selectOne("
-            SELECT COALESCE(SUM(nominal), 0) AS total
-            FROM transaksi
-            WHERE user_id = ?
-            AND jenis = 'pemasukan'
-            AND tanggal = ?
-        ", [$userId, $tanggal])->total;
+        $bulan = Carbon::parse($tanggal)->month;
+        $tahun = Carbon::parse($tanggal)->year;
 
-        $totalPengeluaran = DB::selectOne("
-            SELECT COALESCE(SUM(nominal), 0) AS total
+        $summary = DB::selectOne("
+            SELECT
+                COALESCE(SUM(CASE WHEN jenis = 'pemasukan' THEN nominal END), 0) AS pemasukan,
+                COALESCE(SUM(CASE WHEN jenis = 'pengeluaran' THEN nominal END), 0) AS pengeluaran
             FROM transaksi
             WHERE user_id = ?
-            AND jenis = 'pengeluaran'
-            AND tanggal = ?
-        ", [$userId, $tanggal])->total;
+            AND EXTRACT(MONTH FROM tanggal) = ?
+            AND EXTRACT(YEAR FROM tanggal) = ?
+            AND tanggal <= ?
+        ", [$userId, $bulan, $tahun, $tanggal]);
 
         $transaksi = DB::select("
             SELECT tanggal, jenis, kategori, nominal
@@ -39,9 +37,9 @@ class TransaksiController extends Controller
 
         return view('dashboard', [
             'tanggal' => $tanggal,
-            'totalPemasukan' => $totalPemasukan,
-            'totalPengeluaran' => $totalPengeluaran,
-            'sisaKeuangan' => $totalPemasukan - $totalPengeluaran,
+            'totalPemasukan' => $summary->pemasukan,
+            'totalPengeluaran' => $summary->pengeluaran,
+            'sisaKeuangan' => $summary->pemasukan - $summary->pengeluaran,
             'transaksi' => $transaksi
         ]);
     }

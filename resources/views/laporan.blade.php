@@ -136,6 +136,11 @@ function renderChart(labels, data) {
 
     if (chart) chart.destroy();
 
+    if (labels.length === 0) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        return;
+    }
+
     chart = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -160,6 +165,7 @@ function renderChart(labels, data) {
         }
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', loadLaporan);
 document.getElementById('bulan').addEventListener('change', loadLaporan);
