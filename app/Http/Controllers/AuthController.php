@@ -83,7 +83,9 @@ class AuthController extends Controller
     public function profile()
     {
         $user = DB::selectOne(
-            "SELECT id, name, email FROM users WHERE id = ?",
+            "SELECT id, name, email, photo
+            FROM users
+            WHERE id = ?",
             [session('user_id')]
         );
 
@@ -94,17 +96,41 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:100',
+
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
             'password' => [
                 'nullable',
                 'min:8',
                 'regex:/^(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]+$/',
                 'confirmed'
             ]
-        ], [
-            'password.regex' => 'Password harus mengandung minimal 1 huruf besar dan 1 angka, tanpa karakter khusus.'
         ]);
 
+        /* UPLOAD FOTO */
+        if ($request->hasFile('photo')) {
+
+            $file = $request->file('photo');
+            $filename = time().'_'.$file->getClientOriginalName();
+
+            $file->move(
+                public_path('uploads/profile'),
+                $filename
+            );
+
+            DB::update("
+                UPDATE users
+                SET photo = ?
+                WHERE id = ?
+            ", [
+                $filename,
+                session('user_id')
+            ]);
+        }
+
+        /* UPDATE NAME + PASSWORD */
         if ($request->password) {
+
             DB::update("
                 UPDATE users
                 SET name = ?, password = ?
@@ -114,7 +140,9 @@ class AuthController extends Controller
                 Hash::make($request->password),
                 session('user_id')
             ]);
+
         } else {
+
             DB::update("
                 UPDATE users
                 SET name = ?

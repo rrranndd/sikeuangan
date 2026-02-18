@@ -22,8 +22,28 @@
     @endif
 
     <div class="profile-card">
-        <form method="POST" action="/profile/update" class="profile-form">
+        <form method="POST"
+            action="/profile/update"
+            enctype="multipart/form-data"
+            class="profile-form">
+
             @csrf
+
+            <div class="profile-photo">
+                <img
+                    id="photoPreview"
+                    src="{{ $user->photo
+                        ? asset('uploads/profile/'.$user->photo)
+                        : asset('img/default-user.png') }}"
+                    alt="Foto Profile">
+
+                <input
+                    type="file"
+                    name="photo"
+                    id="photoInput"
+                    accept="image/*">
+
+            </div>
 
             <div class="form-group">
                 <label>Nama</label>
@@ -72,5 +92,31 @@
     </div>
 
 </div>
+
+<script>
+document.getElementById('photoInput')
+.addEventListener('change', function(e){
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('Hanya file gambar yang diperbolehkan!');
+        e.target.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(ev){
+        document.getElementById('photoPreview')
+            .src = ev.target.result;
+    };
+
+    reader.readAsDataURL(file);
+});
+</script>
+
 
 @endsection

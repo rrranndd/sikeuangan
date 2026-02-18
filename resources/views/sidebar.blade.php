@@ -1,38 +1,63 @@
+@php
+$user = DB::table('users')
+    ->where('id', session('user_id'))
+    ->first();
+@endphp
+
 <div class="sidebar" id="sidebar">
 
     <div class="sidebar-header">
         <h2 class="logo">SiKeuangan</h2>
 
-        <button class="btn-sidebar-toggle" id="btnSidebarToggle" aria-label="Toggle Sidebar">
+        <button
+            class="btn-sidebar-toggle"
+            id="btnSidebarToggle"
+            aria-label="Toggle Sidebar">
             ☰
         </button>
 
-        <button class="btn-close-mobile" id="closeSidebar">✕</button>
+        <button
+            class="btn-close-mobile"
+            id="closeSidebar">
+            ✕
+        </button>
     </div>
 
     <div class="sidebar-user">
+
         <div class="user-avatar">
-            <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="7" r="4"/>
-                <path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
-            </svg>
+
+            @if($user && $user->photo)
+                <img
+                    src="{{ asset('uploads/profile/'.$user->photo) }}"
+                    alt="Profile">
+            @else
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="7" r="4"/>
+                    <path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
+                </svg>
+            @endif
+
         </div>
 
         <div class="user-info">
             <strong>{{ session('user_name') }}</strong>
         </div>
+
     </div>
 
     <nav class="sidebar-menu">
 
-        <a href="/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
+        <a href="/dashboard"
+           class="{{ request()->is('dashboard') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24">
                 <path d="M3 9l9-7 9 7v11h-6v-7h-6v7H3z"/>
             </svg>
             <span>Dashboard</span>
         </a>
 
-        <a href="/transaksi" class="{{ request()->is('transaksi') ? 'active' : '' }}">
+        <a href="/transaksi"
+           class="{{ request()->is('transaksi') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24">
                 <polyline points="7 10 12 5 17 10"/>
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -41,7 +66,8 @@
             <span>Transaksi</span>
         </a>
 
-        <a href="/laporan" class="{{ request()->is('laporan') ? 'active' : '' }}">
+        <a href="/laporan"
+           class="{{ request()->is('laporan') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24">
                 <line x1="4" y1="20" x2="20" y2="20"/>
                 <line x1="7" y1="16" x2="7" y2="10"/>
@@ -51,7 +77,8 @@
             <span>Laporan</span>
         </a>
 
-        <a href="/profile" class="{{ request()->is('profile') ? 'active' : '' }}">
+        <a href="/profile"
+           class="{{ request()->is('profile') ? 'active' : '' }}">
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="7" r="4"/>
                 <path d="M4 21v-2a4 4 0 0 1 4-4h8
@@ -60,8 +87,12 @@
             <span>Profile</span>
         </a>
 
-        <form action="{{ route('logout') }}" method="POST" class="logout-form">
+        <form
+            action="{{ route('logout') }}"
+            method="POST"
+            class="logout-form">
             @csrf
+
             <button type="submit" class="logout-btn">
                 <svg viewBox="0 0 24 24">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5
@@ -74,6 +105,7 @@
         </form>
 
     </nav>
+
 </div>
 
 <div class="overlay" id="overlay"></div>
