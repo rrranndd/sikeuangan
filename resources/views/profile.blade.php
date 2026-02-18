@@ -33,7 +33,7 @@
                 <img
                     id="photoPreview"
                     src="{{ $user->photo
-                        ? asset('uploads/profile/'.$user->photo)
+                        ? asset('storage/'.$user->photo)
                         : asset('img/default-user.png') }}"
                     alt="Foto Profile">
 

@@ -112,20 +112,14 @@ class AuthController extends Controller
             $file = $request->file('photo');
             $filename = time().'_'.$file->getClientOriginalName();
 
-            $destination = public_path('uploads/profile');
-
-            if (!file_exists($destination)) {
-                mkdir($destination, 0777, true);
-            }
-
-            $file->move($destination, $filename);
+            $path = $file->storeAs('profile', $filename, 'public');
 
             DB::update("
                 UPDATE users
                 SET photo = ?
                 WHERE id = ?
             ", [
-                $filename,
+                $path,
                 session('user_id')
             ]);
         }
