@@ -107,16 +107,18 @@ class AuthController extends Controller
             ]
         ]);
 
-        /* UPLOAD FOTO */
         if ($request->hasFile('photo')) {
 
             $file = $request->file('photo');
             $filename = time().'_'.$file->getClientOriginalName();
 
-            $file->move(
-                public_path('uploads/profile'),
-                $filename
-            );
+            $destination = public_path('uploads/profile');
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0777, true);
+            }
+
+            $file->move($destination, $filename);
 
             DB::update("
                 UPDATE users
@@ -128,7 +130,6 @@ class AuthController extends Controller
             ]);
         }
 
-        /* UPDATE NAME + PASSWORD */
         if ($request->password) {
 
             DB::update("
