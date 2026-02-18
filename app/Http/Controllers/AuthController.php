@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AuthController extends Controller
 {
@@ -110,16 +112,33 @@ class AuthController extends Controller
         if ($request->hasFile('photo')) {
 
             $file = $request->file('photo');
-            $filename = time().'_'.$file->getClientOriginalName();
 
-            $path = $file->storeAs('profile', $filename, 'public');
+            $cloud_name = "djw9tduho"; // dari URL Anda
+            $upload_preset = "unsigned_upload";
+
+            $response = Http::attach(
+                'file',
+                file_get_contents($file->getRealPath()),
+                $file->getClientOriginalName()
+            )->post(
+                "https://api.cloudinary.com/v1_1/$cloud_name/image/upload",
+                [
+                    'upload_preset' => $upload_preset
+                ]
+            );
+
+            if (!$response->successful()) {
+                dd($response->body());
+            }
+
+            $url = $response['secure_url'];
 
             DB::update("
                 UPDATE users
                 SET photo = ?
                 WHERE id = ?
             ", [
-                $path,
+                $url,
                 session('user_id')
             ]);
         }

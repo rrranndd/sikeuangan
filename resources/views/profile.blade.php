@@ -32,9 +32,7 @@
             <div class="profile-photo">
                 <img
                     id="photoPreview"
-                    src="{{ $user->photo
-                        ? asset('storage/'.$user->photo)
-                        : asset('img/default-user.png') }}"
+                    src="{{ $user->photo ?? asset('img/default-user.png') }}"
                     alt="Foto Profile">
 
                 <input

@@ -29,7 +29,7 @@ $user = DB::table('users')
 
             @if($user && $user->photo)
                 <img
-                    src="{{ asset('storage/'.$user->photo) }}"
+                    src="{{ $user->photo ?? asset('img/default-user.png') }}"
                     alt="Profile">
             @else
                 <svg viewBox="0 0 24 24">
